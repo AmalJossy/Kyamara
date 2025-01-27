@@ -6,7 +6,7 @@ video.setAttribute("muted", "");
 
 // Create canvas
 const canvas = document.createElement("canvas");
-const canvasCtx = canvas.getContext("2d");
+const canvasCtx = canvas.getContext("2d", { willReadFrequently: true });
 
 const LOOP_DURATION = 10000; // 5 seconds in ms
 let startTime = Date.now();
@@ -14,7 +14,7 @@ let frames: ImageData[] = [];
 let isRecording = true;
 
 // user config state
-let isCustomMode = true;
+let isCustomMode = false;
 export function setCustomMode(cb: (mode: boolean) => boolean) {
   isCustomMode = cb(isCustomMode);
   if(isCustomMode) {
@@ -53,9 +53,9 @@ function draw(width: number, height: number) {
     }
     
     // Draw timestamp
-    canvasCtx.font = '20px Arial';
-    canvasCtx.fillStyle = 'red';
-    canvasCtx.fillText(`${(elapsed/1000).toFixed(1)}s`, width - 70, 30);
+    // canvasCtx.font = '20px Arial';
+    // canvasCtx.fillStyle = 'red';
+    // canvasCtx.fillText(`${(elapsed/1000).toFixed(1)}s`, width - 70, 30);
   } 
 }
 
