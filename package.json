@@ -4,7 +4,8 @@
   "description": "Chrome Extension with TypeScript",
   "scripts": {
     "build": "webpack --config webpack.config.js",
-    "watch": "webpack --config webpack.config.js --watch"
+    "watch": "webpack --config webpack.config.js --watch",
+    "type-check": "tsc --noEmit"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.260",

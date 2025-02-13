@@ -1,4 +1,8 @@
-const enum MessageType {
-    ENABLE_STREAM = 'ENABLE_STREAM',
-    TOGGLE_FILTER = 'TOGGLE_FILTER',
-}
+export const messagesTypes = {
+  ENABLE_EFFECT: "ENABLE_EFFECT",
+  DISABLE_EFFECT: "DISABLE_EFFECT",
+} as const;
+
+export const effectNames = {
+  LOOP_VIDEO: "LOOP_VIDEO",
+} as const;

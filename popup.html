@@ -1,11 +1,47 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <title>Chrome Extension</title>
-</head>
-<body>
-    <div id="app"></div>
-    <script type="module" src="dist/popup.js"></script>
-</body>
-</html> 
+  <head>
+    <meta charset="UTF-8" />
+    <title>Camera Toolkit</title>
+    <style>
+      button {
+        padding: 8px 16px;
+        margin: 8px;
+        border-radius: 4px;
+        border: none;
+        background: #2196f3;
+        color: white;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #1976d2;
+      }
+      /* Add styles for active state */
+      button.active {
+        background: #1976d2;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div>
+        <div>Loop Video</div>
+        <form id="loop-effect">
+          <label for="duration">Duration (ms):</label>
+          <input
+            type="number"
+            id="duration"
+            name="duration"
+            value="10000"
+            step="1000"
+          />
+          <button type="submit" id="loop-apply">Apply</button>
+        </form>
+      </div>
+
+      <button type="button" id="remove-effect">Remove</button>
+    </div>
+    <script src="dist/popup.js"></script>
+  </body>
+</html>

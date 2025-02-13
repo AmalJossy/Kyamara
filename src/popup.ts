@@ -1,18 +1,35 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const app = document.getElementById('app');
+import { messagesTypes } from "./constants";
+import { ExtensionMessage } from "./types/messages.type";
+import { loopVideoFormHandler } from "./utils/forms";
 
-  const toggleButton = document.createElement('button');
-  toggleButton.textContent = 'Toggle Filter';
-  toggleButton.onclick = async () => {
-    const [tab] = await chrome.tabs.query({active: true, currentWindow: true});
-    if (tab.id) {
-      await chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        func: () => {
-          window.postMessage({ type: MessageType.TOGGLE_FILTER }, '*');
-        }
-      });
-    }
+const postMessageToTab = async (message: ExtensionMessage) => {
+  const [tab] = await chrome.tabs.query({
+    active: true,
+    currentWindow: true,
+  });
+  if (tab.id) {
+    await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      func: (arg) => {
+        console.log("sending message", arg);
+        window.postMessage(arg, "*");
+      },
+      args: [message],
+    });
+  }
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+  const loopEffectForm = document.getElementById("loop-effect");
+  const loopRemoveButton = document.getElementById("remove-effect");
+  if (!loopEffectForm || !loopRemoveButton) return;
+
+  loopVideoFormHandler(loopEffectForm as HTMLFormElement, postMessageToTab);
+
+  loopRemoveButton.onclick = () => {
+    const message: ExtensionMessage = {
+      type: messagesTypes.DISABLE_EFFECT,
+    };
+    postMessageToTab(message);
   };
-  app?.appendChild(toggleButton);
-}); 
+});
