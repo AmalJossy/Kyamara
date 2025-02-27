@@ -4,7 +4,7 @@ module.exports = {
   mode: "production",
   devtool: "source-map",
   entry: {
-    popup: "./src/popup.ts",
+    popup: "./src/ui/index.tsx",
     content: "./src/content.ts",
   },
   output: {
@@ -15,14 +15,29 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.ts$/,
-        use: "ts-loader",
+        test: /\.(ts|tsx)$/,
         exclude: /node_modules/,
+        use: [
+          {
+            loader: "babel-loader",
+            options: {
+              presets: [
+                "@babel/preset-env",
+                ["@babel/preset-react", { runtime: "automatic" }],
+                "@babel/preset-typescript",
+              ],
+            },
+          },
+        ],
+      },
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader", "postcss-loader"],
       },
     ],
   },
   resolve: {
-    extensions: [".ts", ".js"],
+    extensions: [".tsx", ".ts", ".js"],
   },
   optimization: {
     minimize: false, // Optional: set to true if you want minified output
