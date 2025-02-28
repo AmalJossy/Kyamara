@@ -1,30 +1,19 @@
 import { StopIcon } from "@heroicons/react/24/solid";
-import EffectRow from "../components/EffectRow";
-import { EffectControls } from "../types/effects";
-import { effectNames, messagesTypes } from "../../constants";
+import { messagesTypes } from "../../constants";
 import { postMessageToTab } from "../utils/chromeApi";
-import { PlayIcon } from "@heroicons/react/24/solid";
+import { effectNames } from "../../constants";
 import { EffectConfig } from "../../types/effects.type";
-const effects: EffectControls[] = [
-  {
-    id: effectNames.LOOP_VIDEO,
-    label: "Loop Video",
-    icon: PlayIcon,
-    fields: {
-      duration: {
-        type: "range",
-        label: "Duration",
-        value: 10000,
-        min: 1000,
-        max: 30000,
-      },
-    },
-  },
-  // Add more effects as needed
-];
+import VideoLoopEffect from "../components/VideoLoopEffect";
+import useStorage from "../../hooks/useStorage";
 
 export default function Popup() {
+  const [activeEffect, setActiveEffect] = useStorage<
+    EffectConfig["effectName"] | null
+  >("activeEffect", null);
+
   const handleApplyEffect = (config: EffectConfig) => {
+    setActiveEffect(config.effectName);
+
     postMessageToTab({
       type: messagesTypes.ENABLE_EFFECT,
       payload: config,
@@ -32,6 +21,8 @@ export default function Popup() {
   };
 
   const handleRemoveEffects = () => {
+    setActiveEffect(null);
+
     postMessageToTab({
       type: messagesTypes.DISABLE_EFFECT,
     });
@@ -40,13 +31,10 @@ export default function Popup() {
   return (
     <div className="w-80 bg-gray-900 text-white rounded-lg overflow-hidden shadow-xl">
       <div className="max-h-96 overflow-y-auto p-3 space-y-2">
-        {effects.map((effect) => (
-          <EffectRow
-            key={effect.id}
-            effect={effect}
-            onApply={handleApplyEffect}
-          />
-        ))}
+        <VideoLoopEffect
+          onApply={handleApplyEffect}
+          isActive={activeEffect === effectNames.LOOP_VIDEO}
+        />
       </div>
       <div className="p-3 border-t border-gray-800">
         <button

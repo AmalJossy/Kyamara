@@ -16,5 +16,5 @@
       "world": "MAIN"
     }
   ],
-  "permissions": ["activeTab", "scripting"]
+  "permissions": ["activeTab", "scripting", "storage"]
 }

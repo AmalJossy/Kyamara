@@ -1,55 +1,78 @@
-import { useState } from "react";
-import { EffectControls } from "../types/effects";
-import {
-  ChevronDownIcon,
-  ChevronUpIcon,
-  PlayIcon,
-} from "@heroicons/react/24/solid";
-import { EffectConfig } from "../../types/effects.type";
-import { EffectSettings } from "./EffectSettings";
+import { useState, useId } from "react";
+import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/solid";
+
 interface EffectRowProps {
-  effect: EffectControls;
-  onApply: (config: EffectConfig) => void;
+  label: string;
+  icon: React.ReactNode;
+  action: React.ReactNode;
+  children?: React.ReactNode;
 }
 
-export default function EffectRow({ effect, onApply }: EffectRowProps) {
+export default function EffectRow({
+  label,
+  icon,
+  action,
+  children,
+}: EffectRowProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    const config = Object.fromEntries(formData);
-    onApply({ effectName: effect.id, options: config });
+  const headerId = useId();
+  const contentId = useId();
+
+  const toggleExpanded = () => setIsExpanded(!isExpanded);
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      toggleExpanded();
+    }
   };
+
   return (
-    <div className="rounded-md overflow-hidden bg-gray-850 hover:bg-gray-800 transition-colors">
-      <div className="flex items-center justify-between p-3">
-        <span className="text-white font-medium">{effect.label}</span>
-        <div className="flex gap-2">
-          <button
-            onClick={() => onApply({ effectName: effect.id })}
-            className="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-700 transition-colors"
-            aria-label="Apply effect"
+    <div
+      className="rounded-md overflow-hidden bg-gray-850 hover:bg-gray-800 transition-colors"
+      role="region"
+      aria-labelledby={headerId}
+    >
+      <div className="flex items-center gap-3 p-3" id={headerId}>
+        <div className="flex items-center gap-2">
+          <span
+            className="w-5 h-5 flex items-center justify-center"
+            aria-hidden="true"
           >
-            <PlayIcon className="w-4 h-4 text-blue-400" />
-          </button>
-          {effect.fields && (
+            {icon}
+          </span>
+          <span className="text-white font-medium">{label}</span>
+        </div>
+        <div className="flex gap-2 ml-auto">
+          {action}
+          {children && (
             <button
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-700 transition-colors"
+              onClick={toggleExpanded}
+              onKeyDown={handleKeyDown}
+              className="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+              aria-expanded={isExpanded}
+              aria-controls={contentId}
+              aria-label={`${isExpanded ? "Hide" : "Show"} ${label} settings`}
             >
               {isExpanded ? (
-                <ChevronUpIcon className="w-4 h-4 text-gray-400" />
+                <ChevronUpIcon
+                  className="w-4 h-4 text-gray-400"
+                  aria-hidden="true"
+                />
               ) : (
-                <ChevronDownIcon className="w-4 h-4 text-gray-400" />
+                <ChevronDownIcon
+                  className="w-4 h-4 text-gray-400"
+                  aria-hidden="true"
+                />
               )}
             </button>
           )}
         </div>
       </div>
-      {isExpanded && effect.fields && (
-        <form onSubmit={handleSubmit}>
-          <EffectSettings settings={effect.fields} />
-        </form>
+      {isExpanded && (
+        <div id={contentId} role="region" aria-labelledby={headerId}>
+          {children}
+        </div>
       )}
     </div>
   );
