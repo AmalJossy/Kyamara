@@ -68,31 +68,56 @@ const VideoLoopEffect = ({ onApply, isActive }: VideoLoopEffectProps) => {
       case "processing":
         return (
           <div className="w-8 h-8 relative">
-            <svg className="w-8 h-8 animate-spin" viewBox="0 0 24 24">
+            <svg className="w-8 h-8" viewBox="0 0 24 24">
+              {/* Background circle */}
               <circle
                 className="opacity-25"
                 cx="12"
                 cy="12"
                 r="10"
                 stroke="currentColor"
-                strokeWidth="4"
+                strokeWidth="2"
                 fill="none"
               />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              {/* Progress arc that grows */}
+              <circle
+                className="text-red-500 transition-all duration-300"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="2"
+                fill="none"
+                strokeLinecap="round"
+                strokeDasharray={`${(processingProgress / 100) * 63} 63`}
+                transform="rotate(-90 12 12)"
               />
             </svg>
-            <span className="absolute inset-0 flex items-center justify-center text-xs font-medium text-white">
-              {Math.round(processingProgress)}%
-            </span>
+            {/* Stop button (red circle) */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+            </div>
           </div>
         );
       case "active":
         return (
-          <div className="w-8 h-8 flex items-center justify-center rounded-full bg-green-600 shadow-md">
-            <CheckIcon className="w-4 h-4 text-white" />
+          <div className="w-8 h-8 relative">
+            <svg className="w-8 h-8" viewBox="0 0 24 24">
+              {/* Full circle outline */}
+              <circle
+                className="text-red-500"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="2"
+                fill="none"
+              />
+            </svg>
+            {/* Red square in center */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-3 h-3 bg-red-500 rounded-sm"></div>
+            </div>
           </div>
         );
     }
@@ -128,11 +153,6 @@ const VideoLoopEffect = ({ onApply, isActive }: VideoLoopEffectProps) => {
             disabled={status !== "inactive"}
           />
         </div>
-        {status === "processing" && (
-          <div className="mt-3 text-xs text-gray-400">
-            Recording video loop... {Math.round(processingProgress)}% complete
-          </div>
-        )}
       </div>
     </EffectRow>
   );
