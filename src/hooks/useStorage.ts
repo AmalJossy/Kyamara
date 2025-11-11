@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 
 /**
  * Custom hook for working with Chrome extension storage
+ * !Warning:The storage is local to the extension but data is shared across tabs
+ * @see https://developer.chrome.com/docs/extensions/reference/storage/
  * @param key The storage key to use
  * @param defaultValue The default value if no value exists in storage
  * @returns [currentValue, setterFunction] similar to useState
